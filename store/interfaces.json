@@ -1,0 +1,6 @@
+{
+  "storebanner": {
+    "component": "StoreBanner",
+    "composition": "children"
+  }
+}
