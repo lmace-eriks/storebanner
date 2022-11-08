@@ -1,3 +1,17 @@
+.blankBanner {}
+
 .container {}
 
 .wrapper {}
+
+.text {}
+
+.subText--button {}
+
+.subText--standard {}
+
+.link:hover .subText {}
+
+.link {}
+
+.image {}
