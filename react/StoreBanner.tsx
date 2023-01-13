@@ -12,6 +12,7 @@ interface StoreBannerProps {
 interface BannerObject {
   __editorItemTitle: string
   active: boolean
+  endDate: string
   storePath?: string
   imgSrc: string
   text: string
@@ -35,6 +36,7 @@ interface TextBanner {
 const blankBanner: BannerObject = {
   __editorItemTitle: "",
   active: false,
+  endDate: "",
   imgSrc: "",
   text: "",
   subText: "",
@@ -104,11 +106,30 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
     if (!bannerFound) buildDefaultBanner();
   }
 
+  // Determines if banner should "display" no banner.
   // Determines type of banner, Image or Text. Calls appropriate function.
   // If banner is active, determine type of banner to build.
   // If banner is inactive, build default banner.
   const buildBanner = (index: number) => {
     const banner = banners[index];
+
+    // Store desires no banner at all.
+    if (!banner.text && !banner.imgSrc) {
+      bannerType.current = "nobanner";
+      setBannerInfo({});
+      return;
+    }
+
+    if (banner.endDate) {
+      const rightNow = Date.now();
+      const penultimateSecond = 8.64e+7 - 1000;
+      const isExpired = rightNow > (Date.parse(banner.endDate) + penultimateSecond);
+      if (isExpired) {
+        buildDefaultBanner();
+        return;
+      }
+    }
+
     banner.active ? banner.imgSrc ? buildImagebanner(banner) : buildTextBanner(banner) : buildDefaultBanner();
   }
 
@@ -157,8 +178,10 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
     banner.imgSrc ? buildImagebanner(banner) : buildTextBanner(banner);
   }
 
+  const NoBanner = () => <></>;
+
   // This component lessens layout shift on first paint.
-  const Blank = () => <div className={styles.blankBanner} />
+  const BlankBanner = () => <div className={styles.blankBanner} />
 
   const ImageBannerComponent = () =>
     <div className={styles.container}>
@@ -179,7 +202,7 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
 
   const LinkedBannerComponent = () => <a href={bannerInfo.link} className={styles.link}><BannerComponent /></a>
 
-  const BannerComponent = () => bannerType.current === "image" ? <ImageBannerComponent /> : bannerType.current === "text" ? <TextBannerComponent /> : <Blank />;
+  const BannerComponent = () => bannerType.current === "nobanner" ? <NoBanner /> : bannerType.current === "image" ? <ImageBannerComponent /> : bannerType.current === "text" ? <TextBannerComponent /> : <BlankBanner />;
 
   return bannerInfo.link ? <LinkedBannerComponent /> : <BannerComponent />
 }
@@ -189,7 +212,7 @@ StoreBanner.schema = {
   type: "object",
   properties: {
     override: {
-      title: "Override Switch",
+      title: "Master Override Switch",
       description: "Turn on to display the Override banner on all store pages.",
       type: "boolean",
       default: false
@@ -204,9 +227,14 @@ StoreBanner.schema = {
             type: "string"
           },
           active: {
-            title: "Activate",
+            title: "Active. 'Off' reverts to Default Banner.",
             type: "boolean",
             default: true
+          },
+          endDate: {
+            title: "Active Until",
+            description: "Will display until the final second of this day. Leave blank to ignore. Example: 2023-02-14",
+            type: "string"
           },
           storePath: {
             title: "Store Path",

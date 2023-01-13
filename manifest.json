@@ -1,7 +1,7 @@
 {
   "vendor": "eriksbikeshop",
   "name": "storebanner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "StoreBanner",
   "description": "StoreBanner component",
   "defaultLocale": "pt-BR",
