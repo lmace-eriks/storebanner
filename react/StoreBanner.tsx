@@ -53,7 +53,6 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
   useEffect(() => {
     if (!openGate.current) return;
     openGate.current = false;
-    console.info(banners);
 
     bannerType.current = "";
     setBannerInfo(blankBanner);
@@ -115,7 +114,7 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
     const banner = banners[index];
 
     // Store desires no banner at all.
-    if (!banner.text && !banner.imgSrc) {
+    if (!banner.text && !banner.imgSrc && banner.active) {
       bannerType.current = "nobanner";
       setBannerInfo({});
       return;
