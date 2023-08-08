@@ -53,6 +53,7 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
   useEffect(() => {
     if (!openGate.current) return;
     openGate.current = false;
+    console.info(banners);
 
     bannerType.current = "";
     setBannerInfo(blankBanner);
