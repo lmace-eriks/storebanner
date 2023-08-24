@@ -184,8 +184,9 @@ const StoreBanner: StorefrontFunctionComponent<StoreBannerProps> = ({ override, 
   const BlankBanner = () => <div className={styles.blankBanner} />
 
   const ImageBannerComponent = () =>
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
+    // Hack - Fix later.
+    <div style={{ height: "auto", backgroundColor: "transparent" }} className={styles.container}>
+      <div style={{ padding: "0" }} className={styles.wrapper}>
         <img src={bannerInfo.imgSrc} className={styles.image} />
       </div>
     </div>
